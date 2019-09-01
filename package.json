@@ -50,6 +50,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.1",
+    "@types/webpack": "^4.39.1",
     "@wrench/commitlint-config": "<1.0.0",
     "@wrench/copycat-package": "<1.0.0",
     "@wrench/roll": "<1.0.0",
@@ -62,6 +63,7 @@
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3",
+    "webpack": "^4.39.3",
     "wsrun": "^5.0.0"
   },
   "publishConfig": {
