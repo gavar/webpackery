@@ -1,0 +1,79 @@
+{
+  "name": "webpackery",
+  "version": "0.0.0",
+  "private": true,
+  "description": "webpack contextual configuration",
+  "homepage": "https://github.com/gavar/webpackery#readme",
+  "bugs": {
+    "url": "https://github.com/gavar/webpackery/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gavar/webpackery.git"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Max Stankevich",
+    "email": "max.stankevich.me@gmail.com",
+    "url": "https://github.com/gavar"
+  },
+  "main": "index.js",
+  "workspaces": {
+    "packages": [
+      ".ywl/**",
+      "@types/*",
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "build": "yarn wsrun --bin npm -c pack",
+    "clean": "rimraf out && yarn wsrun -c clean",
+    "format:pack": "fixpack && sort-package-json && wsrun -c format:pack",
+    "release": "semantic-release --no-ci",
+    "sync:pack": "copycat-pack -r && typesync && yarn && yarn format:pack",
+    "test": "jest",
+    "wsrun": "wsrun -p @webpackery/*"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@wrench/commitlint-config"
+    ]
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.17",
+    "@types/node": "^12.7.1",
+    "@wrench/commitlint-config": "<1.0.0",
+    "@wrench/copycat-package": "<1.0.0",
+    "@wrench/roll": "<1.0.0",
+    "@wrench/semantic-release-ws-preset-nodejs": "<1.0.0",
+    "@wrench/ts-config": "<1.0.0",
+    "@wrench/ywl": "<1.0.0",
+    "husky": "^3.0.0",
+    "jest": "^24.8.0",
+    "semantic-release": "^16.0.0-beta",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3",
+    "wsrun": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "commonDependencies": {
+    "tslib": "^1.10.0",
+    "tstt": "^1.0.4"
+  },
+  "ywl": {
+    "pattern": [
+      "@wrench/*"
+    ]
+  }
+}
