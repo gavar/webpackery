@@ -16,6 +16,19 @@ export interface WebpackProvider<T> {
   (context: WebpackContext): T;
 }
 
+export namespace WebpackContext {
+  export interface Props {
+    /** Webpack environment options. */
+    env?: WebpackEnv;
+    /** Webpack CLI arguments. */
+    argv?: WebpackArgv;
+    /** Webpack optimization mode. */
+    mode?: Configuration["mode"];
+    /** Webpack base configuration. */
+    config?: Configuration;
+  }
+}
+
 /**
  * Webpack configuration utility provide easy way to modularize webpack configuration process.
  */
@@ -124,13 +137,12 @@ export class WebpackContext {
 
   /**
    * Create configuration object by installing all extension.
-   * @param env - webpack environment options.
-   * @param argv - webpack arguments.
+
    */
-  async configure(env: WebpackEnv, argv: WebpackArgv): Promise<Configuration> {
+  async configure(props: WebpackContext.Props): Promise<Configuration> {
     try {
       this.logger.info("configuring webpack");
-      this.initialize(env, argv);
+      this.initialize(props);
       if (this.boot) await this.boot(this);
 
       // tslint:disable-next-line:prefer-for-of
@@ -153,10 +165,10 @@ export class WebpackContext {
     }
   }
 
-  private initialize(env: WebpackEnv, argv: WebpackArgv): void {
-    this.env = env;
-    this.argv = argv;
-    this.config = defaultConfig(argv);
+  private initialize(props: WebpackContext.Props): void {
+    this.env = Object.assign({}, props.env);
+    this.argv = Object.assign({}, props.argv);
+    this.config = defaultConfig(props.config, props.mode || this.argv.mode);
     this.isDevServer = isDevServer();
   }
 
@@ -233,9 +245,9 @@ class WebpackConfigurer<T = any> {
   }
 }
 
-function defaultConfig(argv: WebpackArgv): Configuration {
+function defaultConfig(config: Configuration, mode: Configuration["mode"]): Configuration {
   const {NODE_ENV} = process.env;
-  const production = NODE_ENV === "production" || argv.mode === "production";
+  const production = NODE_ENV === "production" || mode === "production";
   return {
     mode: production ? "production" : "development",
     plugins: [],
@@ -247,6 +259,7 @@ function defaultConfig(argv: WebpackArgv): Configuration {
       plugins: [],
     },
     optimization: {},
+    ...config,
   };
 }
 
