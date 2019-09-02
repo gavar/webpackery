@@ -3,7 +3,7 @@ import { WebpackConfigurer, WebpackContext } from "@webpackery/core";
 import { RuleSetLoader, RuleSetRule } from "webpack";
 
 export namespace TsConfigurer {
-  export interface Props extends Options {
+  export interface Props extends Partial<Options> {
     hmr?: boolean;
     extensions?: string[];
   }
@@ -14,13 +14,23 @@ export class TsConfigurer extends WebpackConfigurer<TsConfigurer.Props> {
   /** @inheritdoc */
   protected prepare(props: TsConfigurer.Props, context: WebpackContext): TsConfigurer.Props {
     const {isDevServer, production} = context;
-    return {
+    props = {
       logLevel: "INFO",
-      transpileOnly: true,
       extensions: [".tsx", ".ts", ".jsx", ".js"],
       hmr: !production && isDevServer,
+      transpileOnly: true,
+      compilerOptions: {
+        ...props.compilerOptions,
+      },
       ...props,
     };
+
+    // transpileOnly + declarationMap produce an error
+    // https://github.com/TypeStrong/ts-loader/issues/957
+    if (props.transpileOnly)
+      props.compilerOptions.declarationMap = false;
+
+    return props;
   }
 
   /** @inheritdoc */
