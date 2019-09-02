@@ -22,7 +22,8 @@
     "packages": [
       ".ywl/**",
       "@types/*",
-      "packages/*"
+      "packages/*",
+      "registry/*"
     ]
   },
   "scripts": {
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.1",
+    "@types/semantic-release": "^15.13.0",
     "@types/webpack": "^4.39.1",
     "@wrench/commitlint-config": "<1.0.0",
     "@wrench/copycat-package": "<1.0.0",
@@ -70,8 +72,12 @@
     "access": "public"
   },
   "commonDependencies": {
+    "@emulsy/lang": "<1.0.0",
+    "ansi-colors": "^4.1.1",
+    "lodash": "^4.17.15",
     "tslib": "^1.10.0",
-    "tstt": "^1.0.4"
+    "tstt": "^1.0.4",
+    "webpack-log": "^2.0.0"
   },
   "ywl": {
     "pattern": [
