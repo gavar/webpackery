@@ -21,7 +21,7 @@ export abstract class WebpackConfigurer<T> implements WebpackExtension {
 
   /** @inheritdoc */
   async install(context: WebpackContext): Promise<void> {
-    let options: T = context.options(this.input);
+    let options = context.options(this.input) || {} as T;
     if (this.prepare) options = await this.prepare(options, context) || options;
     return this.configure(context, options);
   }
