@@ -1,0 +1,73 @@
+{
+  "name": "@webpackery/html-configurer",
+  "version": "0.0.0",
+  "description": "HTML configuration for webpack",
+  "keywords": [
+    "html",
+    "html-webpack-plugin",
+    "typescript",
+    "webpack"
+  ],
+  "homepage": "https://github.com/gavar/wrench/tree/master/packages/html-configurer#readme",
+  "bugs": {
+    "url": "https://github.com/gavar/wrench/labels/html-configurer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gavar/webpackery.git",
+    "directory": "registry/html-configurer"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Max Stankevich",
+    "email": "max.stankevich.me@gmail.com",
+    "url": "https://github.com/gavar"
+  },
+  "files": [
+    "lib",
+    "es"
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "yarn clean && roll --preserveModules",
+    "clean": "rimraf tmp out lib es *.tgz",
+    "format": "yarn lint --fix",
+    "format:pack": "fixpack && sort-package-json",
+    "lint": "echo no linting yet",
+    "prepack": "copycat-pack && yarn build",
+    "prepublishOnly": "yarn test && yarn run lint",
+    "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
+  },
+  "dependencies": {
+    "@webpackery/core": ">=0.0.0 <1.0.0",
+    "html-webpack-plugin": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/html-webpack-plugin": "^3.2.1"
+  },
+  "peerDependencies": {
+    "tslib": "^1.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "copycat": {
+    "author": "../..",
+    "license": "../..",
+    "repository": "../..",
+    "publishConfig": "../..",
+    "dependencies": {
+      "@webpackery/core": "../../packages/core"
+    },
+    "peerDependencies": {
+      "tslib": "../.."
+    }
+  },
+  "release": true,
+  "standard-version": {
+    "extends": "@wrench/standard-version-config",
+    "tag-prefix": "v/html-configurer/"
+  }
+}
