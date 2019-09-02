@@ -1,5 +1,5 @@
 import { WebpackProvider } from ".";
-import { WebpackContext } from "./webpack-context";
+import { WebpackContext } from "./context";
 
 /**
  * Represents logical unit that configures webpack feature.

@@ -1,13 +1,15 @@
 import { TypeDef } from "@emulsy/lang";
 import { blue, cyan } from "ansi-colors";
 import { Newable } from "tstt";
-import { Configuration, Entry, Output, Plugin, ResolvePlugin, RuleSetRule } from "webpack";
-import { isDevServer } from "./util";
-import { WebpackArgv } from "./webpack-argv";
-import { WebpackBoot } from "./webpack-boot";
-import { WebpackEnv } from "./webpack-env";
-import { WebpackExtension } from "./webpack-extension";
-import { getLogger, WebpackLogger } from "./webpack-logger";
+import { Configuration, Entry, Output, Plugin } from "webpack";
+import { isDevServer } from "../util";
+import { WebpackArgv } from "../webpack-argv";
+import { WebpackBoot } from "../webpack-boot";
+import { WebpackEnv } from "../webpack-env";
+import { WebpackExtension } from "../webpack-extension";
+import { getLogger, WebpackLogger } from "../webpack-logger";
+import { WebpackContextModuleSyntax } from "./webpack-context-module-syntax";
+import { WebpackContextResolveSyntax } from "./webpack-context-resolve-syntax";
 
 /**
  * Represents function that provides some value by evaluating webpack context.
@@ -34,17 +36,17 @@ export namespace WebpackContext {
  */
 export class WebpackContext {
   protected readonly boot: WebpackBoot;
-  protected readonly logger: WebpackLogger = getLogger(this.constructor);
   protected readonly configurers: WebpackConfigurer[] = [];
 
-  public env: WebpackEnv;
-  public argv: WebpackArgv;
-  public config: Configuration;
-  public isDevServer: boolean;
-  public plugins: PluginEntry[] = [];
+  readonly logger: WebpackLogger = getLogger(this.constructor);
+  readonly module: WebpackContextModuleSyntax = new WebpackContextModuleSyntax(this);
+  readonly resolve: WebpackContextResolveSyntax = new WebpackContextResolveSyntax(this);
 
-  public readonly module: ModuleSyntax = new ModuleSyntax(this);
-  public readonly resolve: ResolveSyntax = new ResolveSyntax(this);
+  env: WebpackEnv;
+  argv: WebpackArgv;
+  config: Configuration;
+  isDevServer: boolean;
+  plugins: PluginEntry[] = [];
 
   constructor(boot?: WebpackBoot) {
     this.boot = boot;
@@ -185,36 +187,6 @@ interface PluginEntry {
   index: number;
   order: number;
   plugin: Plugin;
-}
-
-class ModuleSyntax {
-  public readonly context: WebpackContext;
-
-  constructor(context: WebpackContext) {
-    this.context = context;
-  }
-
-  rule(rule: RuleSetRule): void {
-    this.context.config.module.rules.push(rule);
-  }
-}
-
-class ResolveSyntax {
-  public readonly context: WebpackContext;
-
-  constructor(context: WebpackContext) {
-    this.context = context;
-  }
-
-  extension(...extensions: string[]): void {
-    const array = this.context.config.resolve.extensions;
-    array.push.apply(array, extensions);
-  }
-
-  plugin(plugin: ResolvePlugin): void {
-    const array = this.context.config.resolve.plugins;
-    array.push(plugin);
-  }
 }
 
 class WebpackConfigurer<T = any> {

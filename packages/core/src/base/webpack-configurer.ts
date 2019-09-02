@@ -1,4 +1,4 @@
-import { WebpackContext, WebpackProvider } from "../webpack-context";
+import { WebpackContext, WebpackProvider } from "../context";
 import { WebpackExtension } from "../webpack-extension";
 import { getLogger, WebpackLogger } from "../webpack-logger";
 

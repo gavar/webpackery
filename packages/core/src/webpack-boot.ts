@@ -1,6 +1,6 @@
 import { Configuration } from "webpack";
 import { WebpackArgv } from "./webpack-argv";
-import { WebpackContext } from "./webpack-context";
+import { WebpackContext } from "./context";
 import { WebpackEnv } from "./webpack-env";
 import { WebpackFactory } from "./webpack-factory";
 
