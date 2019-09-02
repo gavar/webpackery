@@ -19,7 +19,8 @@ export interface WebpackBoot {
 export function boot(setup: WebpackBoot): WebpackFactory {
   return async function (env: WebpackEnv, argv: WebpackArgv): Promise<Configuration> {
     const context = new WebpackContext(setup);
-    return context.configure({env, argv});
+    const config = await context.configure({env, argv});
+    return config;
   };
 }
 
@@ -32,7 +33,8 @@ export namespace boot {
   export function storybook(setup: WebpackBoot) {
     return async function (props: Pick<WebpackContext.Props, "config" | "mode">): Promise<Configuration> {
       const context = new WebpackContext(setup);
-      return context.configure(props);
+      const config = await context.configure(props);
+      return config;
     };
   }
 }
