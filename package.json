@@ -48,6 +48,9 @@
   "jest": {
     "preset": "ts-jest"
   },
+  "dependencies": {
+    "tslib": "^1.10.0"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.1",
@@ -64,7 +67,6 @@
     "semantic-release": "^16.0.0-beta",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
-    "tslib": "^1.10.0",
     "typescript": "^3.5.3",
     "webpack": "^4.39.3",
     "wsrun": "^5.0.0"
