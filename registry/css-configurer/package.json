@@ -1,0 +1,74 @@
+{
+  "name": "@webpackery/css-configurer",
+  "version": "0.0.0",
+  "description": "CSS configuration for webpack",
+  "keywords": [
+    "css",
+    "typescript",
+    "webpack"
+  ],
+  "homepage": "https://github.com/gavar/wrench/tree/master/packages/css-configurer#readme",
+  "bugs": {
+    "url": "https://github.com/gavar/wrench/labels/css-configurer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gavar/webpackery.git",
+    "directory": "registry/css-configurer"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Max Stankevich",
+    "email": "max.stankevich.me@gmail.com",
+    "url": "https://github.com/gavar"
+  },
+  "files": [
+    "lib",
+    "es"
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "yarn clean && roll --preserveModules",
+    "clean": "rimraf tmp out lib es *.tgz",
+    "format": "yarn lint --fix",
+    "format:pack": "fixpack && sort-package-json",
+    "lint": "echo no linting yet",
+    "prepack": "copycat-pack && yarn build",
+    "prepublishOnly": "yarn test && yarn run lint",
+    "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
+  },
+  "dependencies": {
+    "@webpackery/core": ">=0.0.0 <1.0.0",
+    "css-loader": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "style-loader": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/mini-css-extract-plugin": "^0.8.0"
+  },
+  "peerDependencies": {
+    "tslib": "^1.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "copycat": {
+    "author": "../..",
+    "license": "../..",
+    "repository": "../..",
+    "publishConfig": "../..",
+    "dependencies": {
+      "@webpackery/core": "../../packages/core"
+    },
+    "peerDependencies": {
+      "tslib": "../.."
+    }
+  },
+  "release": true,
+  "standard-version": {
+    "extends": "@wrench/standard-version-config",
+    "tag-prefix": "v/css-configurer/"
+  }
+}
