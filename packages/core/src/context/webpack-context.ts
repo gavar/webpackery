@@ -1,5 +1,6 @@
 import { TypeDef } from "@emulsy/lang";
 import { blue, cyan } from "ansi-colors";
+import path from "path";
 import { Newable } from "tstt";
 import { Configuration, Entry, Output, Plugin } from "webpack";
 import { isDevServer } from "../util";
@@ -217,21 +218,31 @@ class WebpackConfigurer<T = any> {
   }
 }
 
-function defaultConfig(config: Configuration, mode: Configuration["mode"]): Configuration {
+function defaultConfig(config: Configuration = {}, mode: Configuration["mode"]): Configuration {
+  const cwd = process.cwd();
   const {NODE_ENV} = process.env;
+  const {output, module, resolve, ...rest} = config;
   const production = NODE_ENV === "production" || mode === "production";
   return {
     mode: production ? "production" : "development",
+    context: cwd,
+    devtool: production ? false : "cheap-module-eval-source-map",
+    output: {
+      path: path.join(cwd, "dist"),
+      ...output,
+    },
     plugins: [],
     module: {
       rules: [],
+      ...module,
     },
     resolve: {
       extensions: [],
       plugins: [],
+      ...resolve,
     },
     optimization: {},
-    ...config,
+    ...rest,
   };
 }
 
