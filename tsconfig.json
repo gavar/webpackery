@@ -1,3 +1,15 @@
 {
-  "extends": "@wrench/ts-config"
+  "extends": "@wrench/ts-config",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "out"
+  },
+  "exclude": [
+    "**/#*", // all files where names starts with #
+    "**/es", // all 'es' directories
+    "**/lib", // all 'lib' directories
+    "**/out", // all 'out' directories
+    "**/tmp", // all 'tmp' directories
+    "**/node_modules" // node_modules
+  ]
 }
