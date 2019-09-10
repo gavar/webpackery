@@ -65,7 +65,7 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
 function extensionsToRegex(extensions: string[]): RuleSetCondition {
   if (extensions && extensions.length) {
     const group = extensions.map(x => x.slice(1)).join("|");
-    const pattern = `\\.(${group})$`;
+    const pattern = `\.(${group})$`;
     return new RegExp(pattern);
   }
 }
