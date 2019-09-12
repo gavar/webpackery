@@ -22,6 +22,7 @@
     "packages": [
       ".ywl/**",
       "@types/*",
+      "presets/*",
       "packages/*",
       "registry/*"
     ]
