@@ -1,10 +1,11 @@
 import { TypeDef } from "@emulsy/lang";
 import { blue, cyan } from "ansi-colors";
+import { cloneDeep, defaultsDeep } from "lodash";
 import path from "path";
 import { Newable } from "tstt";
 import { Configuration, Entry, Output, Plugin } from "webpack";
 import { isDevServer } from "../util";
-import { WebpackArgv } from "../webpack-argv";
+import { argvToConfig, WebpackArgv } from "../webpack-argv";
 import { WebpackBoot } from "../webpack-boot";
 import { WebpackEnv } from "../webpack-env";
 import { WebpackExtension } from "../webpack-extension";
@@ -25,8 +26,6 @@ export namespace WebpackContext {
     env?: WebpackEnv;
     /** Webpack CLI arguments. */
     argv?: WebpackArgv;
-    /** Webpack optimization mode. */
-    mode?: Configuration["mode"];
     /** Webpack base configuration. */
     config?: Configuration;
   }
@@ -120,17 +119,17 @@ export class WebpackContext {
   }
 
   /**
-   * Apply the given extension by calling {@link WebpackExtension#install} with this context.
-   * @param extension - extension to apply.
-   */
-  install(extension: WebpackExtension): Promise<void>;
-
-  /**
    * Apply an extension of the given type by calling {@link WebpackExtension#install} with this context.
    * @param type - type of the extension to install.
    * @param args - arguments to pass when instantiating extension.
    */
-  install<T extends new (...args: any) => WebpackExtension>(type: T, ...args: ConstructorParameters<T>): Promise<void>;
+  install<T extends WebpackExtension, P extends any[]>(type: new (...args: P) => T, ...args: P): Promise<void>;
+
+  /**
+   * Apply the given extension by calling {@link WebpackExtension#install} with this context.
+   * @param extension - extension to apply.
+   */
+  install(extension: WebpackExtension): Promise<void>;
 
   /** @private */
   async install(extension: WebpackExtension | Newable<WebpackExtension>, ...args: any[]): Promise<void> {
@@ -140,7 +139,6 @@ export class WebpackContext {
 
   /**
    * Create configuration object by installing all extension.
-
    */
   async configure(props: WebpackContext.Props): Promise<Configuration> {
     try {
@@ -169,10 +167,12 @@ export class WebpackContext {
   }
 
   private initialize(props: WebpackContext.Props): void {
-    this.env = Object.assign({}, props.env);
-    this.argv = Object.assign({}, props.argv);
-    this.config = defaultConfig(props.config, props.mode || this.argv.mode);
     this.isDevServer = isDevServer();
+    this.env = {...props.env};
+    this.argv = {...props.argv};
+    this.config = cloneDeep(props.config);
+    this.config = defaultConfig(this.config);
+    this.config = argvToConfig(this.argv, this.config);
   }
 
   private finalize(): void {
@@ -218,32 +218,32 @@ class WebpackConfigurer<T = any> {
   }
 }
 
-function defaultConfig(config: Configuration = {}, mode: Configuration["mode"]): Configuration {
+function defaultConfig(config: Configuration = {}): Configuration {
   const cwd = process.cwd();
   const {NODE_ENV} = process.env;
-  const {output, module, resolve, ...rest} = config;
-  const production = NODE_ENV === "production" || mode === "production";
-  return {
+  const production = [NODE_ENV, config.mode].some(isProduction);
+  const defaults: Configuration = {
     mode: production ? "production" : "development",
-    context: cwd,
     devtool: production ? false : "cheap-module-eval-source-map",
+    context: cwd,
     output: {
       path: path.join(cwd, "dist"),
-      ...output,
     },
     plugins: [],
     module: {
       rules: [],
-      ...module,
     },
     resolve: {
       extensions: [],
       plugins: [],
-      ...resolve,
     },
     optimization: {},
-    ...rest,
   };
+  return defaultsDeep(config, defaults);
+}
+
+function isProduction(value: string): value is "production" {
+  return value === "production";
 }
 
 function entryCompare(a: PluginEntry, b: PluginEntry) {

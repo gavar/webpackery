@@ -1,6 +1,6 @@
 import { Configuration } from "webpack";
-import { WebpackArgv } from "./webpack-argv";
 import { WebpackContext } from "./context";
+import { WebpackArgv } from "./webpack-argv";
 import { WebpackEnv } from "./webpack-env";
 import { WebpackFactory } from "./webpack-factory";
 
@@ -25,15 +25,21 @@ export function boot(setup: WebpackBoot): WebpackFactory {
 }
 
 export namespace boot {
+
+  export interface StorybookProps {
+    config: Configuration;
+    mode: Configuration["mode"];
+  }
+
   /**
    * Create function for execution by storybook.
    * @param setup - function providing possibility to install extensions into a configurer.
    * @returns function to return as storybook configuration entry point.
    */
   export function storybook(setup: WebpackBoot) {
-    return async function (props: Pick<WebpackContext.Props, "config" | "mode">): Promise<Configuration> {
+    return async function ({config, mode}: StorybookProps): Promise<Configuration> {
       const context = new WebpackContext(setup);
-      const config = await context.configure(props);
+      config = await context.configure({config, argv: {mode}});
       return config;
     };
   }
