@@ -34,7 +34,7 @@
     "release": "semantic-release --no-ci",
     "sync:pack": "copycat-pack -r && typesync && yarn && yarn format:pack",
     "test": "jest",
-    "wsrun": "wsrun -p @webpackery/*"
+    "wsrun": "wsrun --stages --fast-exit -p @webpackery/*"
   },
   "husky": {
     "hooks": {
