@@ -1,0 +1,78 @@
+{
+  "name": "@webpackery/common-preset",
+  "version": "0.0.0",
+  "description": "preset for configuring common webpack tools",
+  "keywords": [
+    "analyzer",
+    "clean",
+    "common",
+    "env",
+    "preset",
+    "typescript",
+    "webpack"
+  ],
+  "homepage": "https://github.com/gavar/wrench/tree/master/packages/common-preset#readme",
+  "bugs": {
+    "url": "https://github.com/gavar/wrench/labels/common-preset"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gavar/webpackery.git",
+    "directory": "presets/common-preset"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Max Stankevich",
+    "email": "max.stankevich.me@gmail.com",
+    "url": "https://github.com/gavar"
+  },
+  "files": [
+    "lib",
+    "es"
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "yarn clean && roll --preserveModules",
+    "clean": "rimraf tmp out lib es *.tgz",
+    "format": "yarn lint --fix",
+    "format:pack": "fixpack && sort-package-json",
+    "lint": "echo no linting yet",
+    "prepack": "copycat-pack && yarn build",
+    "prepublishOnly": "yarn test && yarn run lint",
+    "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
+  },
+  "dependencies": {
+    "@webpackery/clean-configurer": ">=0.0.0 <1.0.0",
+    "@webpackery/core": ">=0.0.0 <1.0.0",
+    "webpack-bundle-analyzer": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/webpack-bundle-analyzer": "^2.13.2"
+  },
+  "peerDependencies": {
+    "tslib": "^1.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "copycat": {
+    "author": "../..",
+    "license": "../..",
+    "repository": "../..",
+    "publishConfig": "../..",
+    "dependencies": {
+      "@webpackery/core": "../../packages/core",
+      "@webpackery/clean-configurer": "../../registry/clean-configurer"
+    },
+    "peerDependencies": {
+      "tslib": "../.."
+    }
+  },
+  "release": true,
+  "standard-version": {
+    "extends": "@wrench/standard-version-config",
+    "tag-prefix": "v/common-preset/"
+  }
+}
