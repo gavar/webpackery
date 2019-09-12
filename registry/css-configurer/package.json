@@ -1,6 +1,6 @@
 {
   "name": "@webpackery/css-configurer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "CSS configuration for webpack",
   "keywords": [
     "css",
@@ -40,7 +40,7 @@
     "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
   },
   "dependencies": {
-    "@webpackery/core": ">=0.0.0 <1.0.0",
+    "@webpackery/core": ">=0.0.1 <1.0.0",
     "css-loader": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
     "style-loader": "^1.0.0"

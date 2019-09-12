@@ -1,6 +1,6 @@
 {
   "name": "@webpackery/babel-configurer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Babel configuration for webpack",
   "keywords": [
     "babel",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.6.0",
-    "@webpackery/core": ">=0.0.0 <1.0.0",
+    "@webpackery/core": ">=0.0.1 <1.0.0",
     "babel-loader": "^8.0.6"
   },
   "devDependencies": {
