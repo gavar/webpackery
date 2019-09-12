@@ -1,10 +1,12 @@
 import { ConfigItem, loadPartialConfig, PartialConfig, TransformCaller, TransformOptions } from "@babel/core";
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
-import { resolve } from "path";
-import { RuleSetCondition } from "webpack";
+import { dirname, resolve } from "path";
+import { RuleSetCondition, RuleSetRule } from "webpack";
+import { moduleResolverByPaths } from "./module-resolver";
+import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
-  export interface Props {
+  export interface Props extends RuleSetRule {
     /**
      * @see RuleSetRule#test.
      * @default regex from {@link extensions}.
@@ -29,12 +31,19 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
   /** @inheritdoc */
   protected prepare(props: BabelConfigurer.Props, context: WebpackContext): BabelConfigurer.Props {
     const {production} = context;
+    // defaults
     props = {...props};
+
+    // default options
     props.options = {
       sourceMaps: production,
       envName: production ? "production" : "development",
+      plugins: [],
       ...props.options,
     };
+
+    // clone objects
+    props.options.plugins = Array.from(props.options.plugins);
 
     const config = loadPartialConfig({
       filename: resolve("./any.js"),
@@ -48,17 +57,29 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
 
     setDefaultBy(props, "extensions", resolveDefaultExtensions, config);
     setDefaultBy(props, "test", extensionsToRegex, props.extensions);
+
+    if (isTypeScript(config)) {
+      const ts = require("typescript");
+      const tsconfigPath = findTsConfigFile(ts, context.config.context);
+      if (tsconfigPath) {
+        const tsconfig = readTsConfigFile(ts, tsconfigPath);
+        const {paths, baseUrl} = tsconfig.compilerOptions;
+        if (paths) {
+          const root = resolve(dirname(tsconfigPath), baseUrl);
+          const item = moduleResolverByPaths(root, paths, props.extensions);
+          props.options.plugins.push(item);
+        }
+      }
+    }
+
     return props;
   }
 
   /** @inheritdoc */
   protected configure(context: WebpackContext, props: BabelConfigurer.Props): void {
-    context.module.rule({
-      test: props.test,
-      loader: "babel-loader",
-      options: props.options,
-    });
-    context.resolve.extension(...props.extensions);
+    const {extensions, ...rule} = props;
+    context.module.rule({loader: "babel-loader", ...rule});
+    context.resolve.extension(...extensions);
   }
 }
 
@@ -71,9 +92,8 @@ function extensionsToRegex(extensions: string[]): RuleSetCondition {
 }
 
 function resolveDefaultExtensions(config: PartialConfig): string[] {
-  const presets = config.options.presets as ConfigItem[];
-  const react = hasFile(presets, "@babel/preset-react");
-  const typescript = hasFile(presets, "@babel/preset-typescript");
+  const react = isReact(config);
+  const typescript = isTypeScript(config);
   return [
     ".js", ".es6", ".es", ".mjs",
     react && ".jsx",
@@ -82,7 +102,20 @@ function resolveDefaultExtensions(config: PartialConfig): string[] {
   ].filter(Boolean);
 }
 
-function hasFile(items: ConfigItem[], preset: string) {
+function isReact(config: PartialConfig): boolean {
+  return hasFile(config, "@babel/preset-typescript");
+}
+
+function isTypeScript(config: PartialConfig): boolean {
+  return hasFile(config, "@babel/preset-typescript");
+}
+
+function hasFile(config: PartialConfig, preset: string): boolean {
+  const items = config.options.presets as ConfigItem[];
+  return containsFileRequest(items, preset);
+}
+
+function containsFileRequest(items: ConfigItem[], preset: string) {
   if (items)
     return items.some(item => item.file && item.file.request === preset);
 }
