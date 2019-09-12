@@ -4,9 +4,8 @@
   "description": "clean-webpack-plugin configuration for webpack",
   "keywords": [
     "clean",
-    "webpack",
-    "plugin",
     "configurer",
+    "plugin",
     "typescript",
     "webpack"
   ],
@@ -46,6 +45,7 @@
     "@webpackery/core": ">=0.0.0 <1.0.0",
     "clean-webpack-plugin": "^3.0.0"
   },
+  "devDependencies": {},
   "peerDependencies": {
     "tslib": "^1.10.0"
   },
