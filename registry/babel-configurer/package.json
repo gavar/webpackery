@@ -41,12 +41,13 @@
     "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
   },
   "dependencies": {
-    "@babel/core": "^7.5.5",
+    "@babel/core": "^7.6.0",
     "@webpackery/core": ">=0.0.0 <1.0.0",
     "babel-loader": "^8.0.6"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.2",
+    "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^3.2.0"
   },
   "peerDependencies": {
