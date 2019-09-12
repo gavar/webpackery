@@ -12,8 +12,17 @@ export abstract class WebpackConfigurer<T> implements WebpackExtension {
 
   /**
    * Initialize new instance of the configurer.
+   * @param provider - options provider that use webpack context to resolve options.
+   */
+  constructor(provider: (context: WebpackContext) => T);
+
+  /**
+   * Initialize new instance of the configurer.
    * @param input - input options to use while installing,
    */
+  constructor(input?: T);
+
+  /** @internal */
   constructor(input?: T | WebpackProvider<T>) {
     this.input = input;
     this.logger = getLogger(this.constructor);
