@@ -27,7 +27,7 @@ const primitiveKeys: Array<keyof WebpackArgv> = [
 
 export function argvToConfig(argv: WebpackArgv, config?: Configuration): Configuration {
   argv = omitBy(argv, isNil);
-  const primitives = pick(argv, "mode", primitiveKeys);
+  const primitives = pick(argv,  primitiveKeys);
   config = defaults(config || {}, primitives);
   return config;
 }

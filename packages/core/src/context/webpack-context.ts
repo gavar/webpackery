@@ -171,8 +171,8 @@ export class WebpackContext {
     this.env = {...props.env};
     this.argv = {...props.argv};
     this.config = cloneDeep(props.config);
-    this.config = defaultConfig(this.config);
     this.config = argvToConfig(this.argv, this.config);
+    this.config = defaultConfig(this.config);
   }
 
   private finalize(): void {
