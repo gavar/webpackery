@@ -44,10 +44,14 @@
     "@babel/core": "^7.6.0",
     "@webpackery/core": ">=0.0.1 <1.0.0",
     "babel-loader": "^8.0.6",
-    "babel-plugin-module-resolver": "^3.2.0"
+    "babel-plugin-module-resolver": "^3.2.0",
+    "lodash": "^4.17.15",
+    "resolve": "^1.4.0"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.1.2"
+    "@types/babel__core": "^7.1.2",
+    "@types/lodash": "^4.14.138",
+    "@types/resolve": "^0.0.8"
   },
   "peerDependencies": {
     "tslib": "^1.10.0"
@@ -61,7 +65,9 @@
     "repository": "../..",
     "publishConfig": "../..",
     "dependencies": {
-      "@webpackery/core": "../../packages/core"
+      "@webpackery/core": "../../packages/core",
+      "lodash": "../..",
+      "resolve": "babel-plugin-module-resolver"
     },
     "peerDependencies": {
       "tslib": "../.."
