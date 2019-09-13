@@ -1,3 +1,10 @@
+## [0.0.2](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.1...v/babel-configurer/0.0.2) (2019-09-13)
+
+
+### Bug Fixes
+
+* babel-plugin-module-resolver configuration ([7fb8523](https://github.com/gavar/webpackery/commit/7fb8523))
+
 ## [0.0.1](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.0...v/babel-configurer/0.0.1) (2019-09-12)
 
 
