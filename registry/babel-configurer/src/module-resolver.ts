@@ -1,4 +1,5 @@
 import { PluginItem } from "@babel/core";
+import { escapeRegExp } from "lodash";
 
 /**
  * Create plugin configuration entry that uses `paths` property from `tsconfig.json`.
@@ -55,7 +56,7 @@ function tryMatcher(matcher: Matcher, resolver: Resolver,
 function createMatchers(paths: Record<string, string[]>): Array<[RegExp, string[]]> {
   const matchers: Array<[RegExp, string[]]> = [];
   for (const key of Object.keys(paths)) {
-    const pattern = key.replace("*", "(.+)");
+    const pattern = escapeRegExp(key).replace("\\*", "(.+)");
     const regex = new RegExp(pattern);
     const substitutions = paths[key].map(toSubstitution);
     matchers.push([regex, substitutions]);
