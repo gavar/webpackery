@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.2...v/babel-configurer/0.0.3) (2019-09-13)
+
+
+### Bug Fixes
+
+* `babel-plugin-module-resolver` not added to babel until defining as override ([cec5fa7](https://github.com/gavar/webpackery/commit/cec5fa7))
+
 ## [0.0.2](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.1...v/babel-configurer/0.0.2) (2019-09-13)
 
 
