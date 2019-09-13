@@ -7,18 +7,19 @@ import { PluginItem } from "@babel/core";
  * @param extensions - file extensions to use.
  */
 export function moduleResolverByPaths(root: string, paths: Record<string, string[]>, extensions: string[]): PluginItem {
-  const plugin = require("babel-plugin-module-resolver");
+  const {resolvePath} = require("babel-plugin-module-resolver");
   const matchers = createMatchers(paths);
-  return [plugin, {
+  const options = {
     root,
     extensions,
     resolvePath(specifier: string, importer: string, options: unknown): string {
       let path: string;
       for (let i = 0; !path && i < matchers.length; i++)
-        path = tryMatcher(matchers[i], plugin.resolvePath, specifier, importer, options);
-      return path || plugin.resolvePath(specifier, importer, options);
+        path = tryMatcher(matchers[i], resolvePath, specifier, importer, options);
+      return path || resolvePath(specifier, importer, options);
     },
-  }];
+  };
+  return ["babel-plugin-module-resolver", options, "ts-config-paths-module-resolver"];
 }
 
 /**

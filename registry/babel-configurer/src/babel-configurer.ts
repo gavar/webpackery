@@ -6,6 +6,10 @@ import { moduleResolverByPaths } from "./module-resolver";
 import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
+  export interface LoaderOptions extends TransformOptions {
+    overrides?: TransformOptions[];
+  }
+
   export interface Props extends RuleSetRule {
     /**
      * @see RuleSetRule#test.
@@ -22,7 +26,7 @@ export namespace BabelConfigurer {
     extensions?: string[];
 
     /** Babel loader options. */
-    options?: TransformOptions;
+    options?: LoaderOptions;
   }
 }
 
@@ -38,12 +42,12 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
     props.options = {
       sourceMaps: production,
       envName: production ? "production" : "development",
-      plugins: [],
+      overrides: [],
       ...props.options,
     };
 
     // clone objects
-    props.options.plugins = Array.from(props.options.plugins);
+    props.options.overrides = Array.from(props.options.overrides);
 
     const config = loadPartialConfig({
       filename: resolve("./any.js"),
@@ -67,7 +71,8 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
         if (paths) {
           const root = resolve(dirname(tsconfigPath), baseUrl);
           const item = moduleResolverByPaths(root, paths, props.extensions);
-          props.options.plugins.push(item);
+          const override: TransformOptions = {plugins: [item]};
+          props.options.overrides.push(override);
         }
       }
     }
