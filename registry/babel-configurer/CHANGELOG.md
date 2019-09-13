@@ -1,3 +1,11 @@
+## [0.0.4](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.3...v/babel-configurer/0.0.4) (2019-09-13)
+
+
+### Bug Fixes
+
+* escaping regex when for paths pattern ([101602d](https://github.com/gavar/webpackery/commit/101602d))
+* use `resolve` module to resolve path substitutions ([f7ba8d8](https://github.com/gavar/webpackery/commit/f7ba8d8))
+
 ## [0.0.3](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.2...v/babel-configurer/0.0.3) (2019-09-13)
 
 
