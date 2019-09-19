@@ -1,3 +1,10 @@
+## [0.0.5](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.4...v/babel-configurer/0.0.5) (2019-09-19)
+
+
+### Bug Fixes
+
+* include .d.ts resolution for typescript ([0aac26d](https://github.com/gavar/webpackery/commit/0aac26d))
+
 ## [0.0.4](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.3...v/babel-configurer/0.0.4) (2019-09-13)
 
 
