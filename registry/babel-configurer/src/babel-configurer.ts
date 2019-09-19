@@ -102,9 +102,9 @@ function resolveDefaultExtensions(config: PartialConfig): string[] {
   return [
     ".js", ".es6", ".es", ".mjs",
     react && ".jsx",
-    typescript && ".ts",
+    typescript && [".ts", ".d.ts"],
     typescript && react && ".tsx",
-  ].filter(Boolean);
+  ].filter(Boolean).flat();
 }
 
 function isReact(config: PartialConfig): boolean {
