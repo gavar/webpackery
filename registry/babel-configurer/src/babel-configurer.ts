@@ -1,8 +1,8 @@
 import { ConfigItem, loadPartialConfig, PartialConfig, TransformCaller, TransformOptions } from "@babel/core";
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
-import { dirname, resolve } from "path";
+import { resolve } from "path";
+import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 import { RuleSetCondition, RuleSetRule } from "webpack";
-import { moduleResolverByPaths } from "./module-resolver";
 import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
@@ -67,12 +67,11 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
       const tsconfigPath = findTsConfigFile(ts, context.config.context);
       if (tsconfigPath) {
         const tsconfig = readTsConfigFile(ts, tsconfigPath);
-        const {paths, baseUrl} = tsconfig.compilerOptions;
-        if (paths) {
-          const root = resolve(dirname(tsconfigPath), baseUrl);
-          const item = moduleResolverByPaths(root, paths, props.extensions);
-          const override: TransformOptions = {plugins: [item]};
-          props.options.overrides.push(override);
+        if (tsconfig.compilerOptions.paths) {
+          context.resolve.plugin(new TsconfigPathsPlugin({
+            extensions: props.extensions,
+            configFile: tsconfigPath,
+          }));
         }
       }
     }
