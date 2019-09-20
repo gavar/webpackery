@@ -1,3 +1,10 @@
+## [0.0.6](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.5...v/babel-configurer/0.0.6) (2019-09-20)
+
+
+### Bug Fixes
+
+* use `tsconfig-paths-webpack-plugin` ([f4873cb](https://github.com/gavar/webpackery/commit/f4873cb))
+
 ## [0.0.5](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.4...v/babel-configurer/0.0.5) (2019-09-19)
 
 
