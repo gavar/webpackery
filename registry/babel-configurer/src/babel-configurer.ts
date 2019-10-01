@@ -3,6 +3,7 @@ import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/cor
 import { resolve } from "path";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 import { RuleSetCondition, RuleSetRule } from "webpack";
+import { InjectEmptyExports } from "./inject-empty-exports";
 import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
@@ -42,11 +43,13 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
     props.options = {
       sourceMaps: production,
       envName: production ? "production" : "development",
+      plugins: [],
       overrides: [],
       ...props.options,
     };
 
     // clone objects
+    const plugins = props.options.plugins = Array.from(props.options.plugins);
     props.options.overrides = Array.from(props.options.overrides);
 
     const config = loadPartialConfig({
@@ -67,15 +70,23 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
       const tsconfigPath = findTsConfigFile(ts, context.config.context);
       if (tsconfigPath) {
         const tsconfig = readTsConfigFile(ts, tsconfigPath);
-        if (tsconfig.compilerOptions.paths) {
+        const {compilerOptions} = tsconfig;
+        const {paths, preserveConstEnums} = compilerOptions;
+
+        // use tsconfig paths for resolution
+        if (paths)
           context.resolve.plugin(new TsconfigPathsPlugin({
             extensions: props.extensions,
             configFile: tsconfigPath,
           }));
-        }
+
+        const transform = preserveConstEnums ? "removeConst" : "constObject";
+        plugins.push(
+          InjectEmptyExports,
+          ["babel-plugin-const-enum", {transform}],
+        );
       }
     }
-
     return props;
   }
 
