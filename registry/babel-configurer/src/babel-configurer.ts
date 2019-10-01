@@ -118,7 +118,7 @@ function resolveDefaultExtensions(config: PartialConfig): string[] {
 }
 
 function isReact(config: PartialConfig): boolean {
-  return hasFile(config, "@babel/preset-typescript");
+  return hasFile(config, "@babel/preset-react");
 }
 
 function isTypeScript(config: PartialConfig): boolean {
