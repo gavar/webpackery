@@ -1,4 +1,11 @@
-import { ConfigItem, loadPartialConfig, PartialConfig, TransformCaller, TransformOptions } from "@babel/core";
+import {
+  ConfigItem,
+  loadPartialConfig,
+  PartialConfig,
+  PluginItem,
+  TransformCaller,
+  TransformOptions,
+} from "@babel/core";
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
 import { resolve } from "path";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
@@ -126,11 +133,19 @@ function isTypeScript(config: PartialConfig): boolean {
 }
 
 function hasFile(config: PartialConfig, preset: string): boolean {
-  const items = config.options.presets as ConfigItem[];
+  const items = config.options.presets;
   return containsFileRequest(items, preset);
 }
 
-function containsFileRequest(items: ConfigItem[], preset: string) {
+function containsFileRequest(items: PluginItem[], preset: string) {
   if (items)
-    return items.some(item => item.file && item.file.request === preset);
+    return items.some(item => requestOf(item) === preset);
+}
+
+function requestOf(item: PluginItem) {
+  if (item) {
+    if (typeof item === "string") return item;
+    if (Array.isArray(item)) return item[0];
+    if ((item as ConfigItem).file) return (item as ConfigItem).file.request;
+  }
 }
