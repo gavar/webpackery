@@ -1,3 +1,10 @@
+## [0.0.4](https://github.com/gavar/webpackery/compare/v/core/0.0.3...v/core/0.0.4) (2019-10-01)
+
+
+### Bug Fixes
+
+* plugin name resolution ([fd6ccbb](https://github.com/gavar/webpackery/commit/fd6ccbb))
+
 ## [0.0.3](https://github.com/gavar/webpackery/compare/v/core/0.0.2...v/core/0.0.3) (2019-10-01)
 
 

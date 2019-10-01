@@ -1,3 +1,10 @@
+## [0.0.8](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.7...v/babel-configurer/0.0.8) (2019-10-01)
+
+
+### Bug Fixes
+
+* resolving config item file name ([d0bb825](https://github.com/gavar/webpackery/commit/d0bb825))
+
 ## [0.0.7](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.6...v/babel-configurer/0.0.7) (2019-10-01)
 
 
