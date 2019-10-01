@@ -1,9 +1,10 @@
+import { TransformOptions } from "@babel/core";
 import { TypeDef } from "@emulsy/lang";
 import { blue, cyan } from "ansi-colors";
 import { cloneDeep, defaultsDeep } from "lodash";
 import path from "path";
 import { Newable } from "tstt";
-import { Configuration, Entry, Output, Plugin } from "webpack";
+import { Compiler, Configuration, Entry, Output, Plugin } from "webpack";
 import { isDevServer } from "../util";
 import { argvToConfig, WebpackArgv } from "../webpack-argv";
 import { WebpackBoot } from "../webpack-boot";
@@ -18,6 +19,10 @@ import { WebpackContextResolveSyntax } from "./webpack-context-resolve-syntax";
  */
 export interface WebpackProvider<T> {
   (context: WebpackContext): T;
+}
+
+export interface PluginFunction {
+  (compiler: Compiler): TransformOptions;
 }
 
 export namespace WebpackContext {
@@ -79,13 +84,12 @@ export class WebpackContext {
    * @param plugin - plugin to add.
    * @param order - order of the plugin within plugins list (less value -> closer to beginning).
    */
-  plugin<T extends Plugin>(plugin: T, order: number = 0): T {
+  plugin(plugin: Plugin | PluginFunction, order: number = 0): void {
     if (plugin) {
       const index = this.plugins.length;
-      const name = plugin.constructor.name;
+      const name = resolvePluginName(plugin);
       this.plugins.push({name, order, index, plugin});
     }
-    return plugin;
   }
 
   /**
@@ -154,11 +158,17 @@ export class WebpackContext {
         await extension.install(this);
       }
 
+      // install plugins
       this.plugins.sort(entryCompare);
-      this.config.plugins.push(...this.plugins.map(x => x.plugin));
+      this.config.plugins = [
+        ...this.config.plugins,
+        ...this.plugins.map(x => x.plugin) as any,
+      ];
+
+      // display plugins
       this.logger.info(blue("########   Webpack Plugins   ########"));
-      for (const entry of this.plugins)
-        this.logger.info(cyan(entry.name));
+      for (const entry of this.config.plugins)
+        this.logger.info(cyan(resolvePluginName(entry)));
 
       return this.config;
     } finally {
@@ -187,7 +197,7 @@ interface PluginEntry {
   name: string;
   index: number;
   order: number;
-  plugin: Plugin;
+  plugin: Plugin | PluginFunction;
 }
 
 class WebpackConfigurer<T = any> {
@@ -250,4 +260,9 @@ function entryCompare(a: PluginEntry, b: PluginEntry) {
   return a.order - b.order // explicit order
     || a.index - b.index // natural order
     ;
+}
+
+function resolvePluginName(plugin: Plugin | PluginFunction): string {
+  if (plugin)
+    return (plugin as PluginFunction).name;
 }
