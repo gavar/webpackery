@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/gavar/webpackery/compare/v/core/0.0.2...v/core/0.0.3) (2019-10-01)
+
+
+### Bug Fixes
+
+* plugin function declaration ([c503c0a](https://github.com/gavar/webpackery/commit/c503c0a))
+
 ## [0.0.2](https://github.com/gavar/webpackery/compare/v/core/0.0.1...v/core/0.0.2) (2019-09-13)
 
 

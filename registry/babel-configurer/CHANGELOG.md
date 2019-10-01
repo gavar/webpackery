@@ -1,3 +1,15 @@
+## [0.0.7](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.6...v/babel-configurer/0.0.7) (2019-10-01)
+
+
+### Bug Fixes
+
+* detecting React ([4be1b95](https://github.com/gavar/webpackery/commit/4be1b95))
+
+
+### Features
+
+* inject empty exports and allow const enums ([c3f6926](https://github.com/gavar/webpackery/commit/c3f6926))
+
 ## [0.0.6](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.5...v/babel-configurer/0.0.6) (2019-09-20)
 
 
