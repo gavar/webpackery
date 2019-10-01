@@ -263,6 +263,8 @@ function entryCompare(a: PluginEntry, b: PluginEntry) {
 }
 
 function resolvePluginName(plugin: Plugin | PluginFunction): string {
-  if (plugin)
-    return (plugin as PluginFunction).name;
+  if (plugin) {
+    if (typeof plugin === "function") return plugin.name;
+    if (typeof plugin === "object") return plugin.constructor.name;
+  }
 }
