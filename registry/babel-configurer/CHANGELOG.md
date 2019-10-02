@@ -1,3 +1,10 @@
+## [0.0.10](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.9...v/babel-configurer/0.0.10) (2019-10-02)
+
+
+### Bug Fixes
+
+* include custom loader in exports to avoid it being removed by tree-shaking ([3a0316e](https://github.com/gavar/webpackery/commit/3a0316e))
+
 ## [0.0.9](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.8...v/babel-configurer/0.0.9) (2019-10-02)
 
 
