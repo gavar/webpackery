@@ -1,4 +1,12 @@
-import { loadOptions, PluginItem, PluginObj, TransformOptions } from "@babel/core";
+import {
+  ConfigItem,
+  loadOptions,
+  loadPartialConfig,
+  PartialConfig,
+  PluginItem,
+  PluginObj,
+  TransformOptions,
+} from "@babel/core";
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
 import { omit } from "lodash";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
@@ -66,15 +74,19 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
       ...props.options,
     };
 
-    // load babel options
+    const partial = loadPartialConfig({
+      filename: __filename,
+      ...props.options,
+    });
+
     const loaded = loadOptions({
       filename: __filename,
       ...props.options,
     }) as LoadedOptions;
 
     // dynamic defaults
-    setDefaultBy(props, "useReact", isReact, loaded.plugins);
-    setDefaultBy(props, "useTypesScript", isTypeScript, loaded.plugins);
+    setDefaultBy(props, "useReact", isReact, partial, loaded.plugins);
+    setDefaultBy(props, "useTypesScript", isTypeScript, partial, loaded.plugins);
     setDefaultBy(props, "extensions", resolveDefaultExtensions, props);
     setDefaultBy(props, "test", extensionsToRegex, props.extensions);
     return props;
@@ -139,22 +151,26 @@ function resolveDefaultExtensions(props: BabelConfigurer.Props): string[] {
   ].filter(Boolean).flat();
 }
 
-function isReact(plugins: Plugin[]): boolean {
-  return plugins.some(isReactPlugin);
+function isReact(partial: PartialConfig, plugins: Plugin[]): boolean {
+  return someRequestName(partial.options.presets, isTypeScriptName)
+    || someRequestName(partial.options.plugins, isTypeScriptName)
+    || somePluginName(plugins, isTypeScriptName);
 }
 
-function isTypeScript(plugins: Plugin[]): boolean {
-  return plugins.some(isTypeScriptPlugin);
+function isTypeScript(partial: PartialConfig, plugins: Plugin[]): boolean {
+  return someRequestName(partial.options.presets, isReactName)
+    || someRequestName(partial.options.plugins, isReactName)
+    || somePluginName(plugins, isReactName);
 }
 
-/** Whether plugin relates to TypeScript. */
-function isTypeScriptPlugin(plugin: Plugin) {
-  return plugin.key.startsWith("transform-typescript");
+/** Whether plugin / preset name relates to TypeScript. */
+function isTypeScriptName(name: string) {
+  return name.includes("typescript");
 }
 
-/** Whether plugin relates to React. */
-function isReactPlugin(plugin: Plugin) {
-  return plugin.key.startsWith("transform-react");
+/** Whether plugin / preset name relates to React. */
+function isReactName(name: string) {
+  return name.includes("react");
 }
 
 /** Create plugin configuration item for `babel-plugin-const-enum`. */
@@ -171,4 +187,26 @@ interface Plugin<T = any> extends PluginObj<T> {
   name: never;
   key: string;
   options: object;
+}
+
+function somePluginName<T>(plugins: Plugin<T>[], predicate: (name: string) => boolean): boolean {
+  if (plugins)
+    for (const plugin of plugins)
+      if (predicate(plugin.key))
+        return true;
+}
+
+function someRequestName(items: PluginItem[], predicate: (name: string) => boolean): boolean {
+  if (items)
+    for (const item of items)
+      if (predicate(requestOf(item)))
+        return true;
+}
+
+function requestOf(item: PluginItem): string {
+  if (item) {
+    if (typeof item === "string") return item;
+    if (Array.isArray(item)) return requestOf(item[0]);
+    if ((item as ConfigItem).file) return (item as ConfigItem).file.request;
+  }
 }
