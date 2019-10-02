@@ -1,3 +1,10 @@
+## [0.0.9](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.8...v/babel-configurer/0.0.9) (2019-10-02)
+
+
+### Bug Fixes
+
+* use custom babel-loader since babel.config.js overwrites all values ([cc85a5d](https://github.com/gavar/webpackery/commit/cc85a5d))
+
 ## [0.0.8](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.7...v/babel-configurer/0.0.8) (2019-10-01)
 
 
