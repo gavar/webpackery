@@ -13,12 +13,15 @@ export interface LoaderCustomOptions extends TransformOptions {
 
 }
 
-export default require("babel-loader").custom(function () {
+/** Function for creating custom babel-loader. */
+function babelLoader() {
   return {
     customOptions,
     config,
   };
-});
+}
+
+export default require("babel-loader").custom(babelLoader);
 
 function customOptions({custom, ...loader}: LoaderProps) {
   return {custom, loader};
