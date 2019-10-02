@@ -1,29 +1,21 @@
-import {
-  ConfigItem,
-  loadPartialConfig,
-  PartialConfig,
-  PluginItem,
-  TransformCaller,
-  TransformOptions,
-} from "@babel/core";
+import { loadOptions, PluginItem, PluginObj, TransformOptions } from "@babel/core";
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
-import { resolve } from "path";
+import { omit } from "lodash";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 import { RuleSetCondition, RuleSetRule } from "webpack";
 import { InjectEmptyExports } from "./inject-empty-exports";
 import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
-  export interface LoaderOptions extends TransformOptions {
-    overrides?: TransformOptions[];
-  }
-
   export interface Props extends RuleSetRule {
     /**
      * @see RuleSetRule#test.
      * @default regex from {@link extensions}.
      */
     test?: RuleSetCondition;
+
+    /** Babel loader options. */
+    options?: TransformOptions;
 
     /**
      * Extensions to register for webpack resolution.
@@ -33,48 +25,71 @@ export namespace BabelConfigurer {
      */
     extensions?: string[];
 
-    /** Babel loader options. */
-    options?: LoaderOptions;
+    /**
+     * Whether to process React files.
+     * Enabled by default when any React related plugin detected.
+     */
+    useReact?: boolean;
+
+    /**
+     * Whether to process TypeScript files.
+     * Enabled by default when any TypeScript related plugin detected.
+     */
+    useTypesScript?: boolean;
+
+    /**
+     * Path to a tsconfig.json.
+     * May define additional properties to use in babel / webpack.
+     */
+    tsconfigPath?: string;
   }
 }
+
+const omitKeys: Array<Exclude<keyof BabelConfigurer.Props, keyof RuleSetRule>> = [
+  "extensions",
+  "tsconfigPath",
+  "useReact",
+  "useTypesScript",
+];
 
 export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
 
   /** @inheritdoc */
   protected prepare(props: BabelConfigurer.Props, context: WebpackContext): BabelConfigurer.Props {
     const {production} = context;
+
     // defaults
     props = {...props};
-
-    // default options
     props.options = {
       sourceMaps: production,
       envName: production ? "production" : "development",
-      plugins: [],
-      overrides: [],
       ...props.options,
     };
 
-    // clone objects
-    const plugins = props.options.plugins = Array.from(props.options.plugins);
-    props.options.overrides = Array.from(props.options.overrides);
-
-    const config = loadPartialConfig({
-      filename: resolve("./any.js"),
-      caller: {
-        name: "@webpackery/babel-configurer",
-        supportsStaticESM: true,
-        supportsDynamicImport: true,
-      } as TransformCaller,
+    // load babel options
+    const loaded = loadOptions({
+      filename: __filename,
       ...props.options,
-    });
+    }) as LoadedOptions;
 
-    setDefaultBy(props, "extensions", resolveDefaultExtensions, config);
+    // dynamic defaults
+    setDefaultBy(props, "useReact", isReact, loaded.plugins);
+    setDefaultBy(props, "useTypesScript", isTypeScript, loaded.plugins);
+    setDefaultBy(props, "extensions", resolveDefaultExtensions, props);
     setDefaultBy(props, "test", extensionsToRegex, props.extensions);
+    return props;
+  }
 
-    if (isTypeScript(config)) {
+  /** @inheritdoc */
+  protected configure(context: WebpackContext, props: BabelConfigurer.Props): void {
+    const custom: TransformOptions = {
+      plugins: [],
+    };
+
+    // configure TypeScript
+    if (props.useTypesScript) {
       const ts = require("typescript");
-      const tsconfigPath = findTsConfigFile(ts, context.config.context);
+      const tsconfigPath = props.tsconfigPath || findTsConfigFile(ts, context.config.context);
       if (tsconfigPath) {
         const tsconfig = readTsConfigFile(ts, tsconfigPath);
         const {compilerOptions} = tsconfig;
@@ -87,21 +102,22 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
             configFile: tsconfigPath,
           }));
 
-        const transform = preserveConstEnums ? "removeConst" : "constObject";
-        plugins.push(
+        // add common typescript plugins
+        custom.plugins.push(
+          constEnumPlugin(preserveConstEnums),
           InjectEmptyExports,
-          ["babel-plugin-const-enum", {transform}],
         );
       }
     }
-    return props;
-  }
 
-  /** @inheritdoc */
-  protected configure(context: WebpackContext, props: BabelConfigurer.Props): void {
-    const {extensions, ...rule} = props;
-    context.module.rule({loader: "babel-loader", ...rule});
-    context.resolve.extension(...extensions);
+    const rule: RuleSetRule = {
+      loader: require.resolve("./babel-custom-loader"),
+      ...omit(props, omitKeys),
+      options: {custom, ...props.options},
+    };
+
+    context.module.rule(rule);
+    context.resolve.extension(...props.extensions);
   }
 }
 
@@ -113,39 +129,46 @@ function extensionsToRegex(extensions: string[]): RuleSetCondition {
   }
 }
 
-function resolveDefaultExtensions(config: PartialConfig): string[] {
-  const react = isReact(config);
-  const typescript = isTypeScript(config);
+function resolveDefaultExtensions(props: BabelConfigurer.Props): string[] {
+  const {useReact, useTypesScript} = props;
   return [
     ".js", ".es6", ".es", ".mjs",
-    react && ".jsx",
-    typescript && [".ts", ".d.ts"],
-    typescript && react && ".tsx",
+    useReact && ".jsx",
+    useTypesScript && [".ts", ".d.ts"],
+    useTypesScript && useReact && ".tsx",
   ].filter(Boolean).flat();
 }
 
-function isReact(config: PartialConfig): boolean {
-  return hasFile(config, "@babel/preset-react");
+function isReact(plugins: Plugin[]): boolean {
+  return plugins.some(isReactPlugin);
 }
 
-function isTypeScript(config: PartialConfig): boolean {
-  return hasFile(config, "@babel/preset-typescript");
+function isTypeScript(plugins: Plugin[]): boolean {
+  return plugins.some(isTypeScriptPlugin);
 }
 
-function hasFile(config: PartialConfig, preset: string): boolean {
-  const items = config.options.presets;
-  return containsFileRequest(items, preset);
+/** Whether plugin relates to TypeScript. */
+function isTypeScriptPlugin(plugin: Plugin) {
+  return plugin.key.startsWith("transform-typescript");
 }
 
-function containsFileRequest(items: PluginItem[], preset: string) {
-  if (items)
-    return items.some(item => requestOf(item) === preset);
+/** Whether plugin relates to React. */
+function isReactPlugin(plugin: Plugin) {
+  return plugin.key.startsWith("transform-react");
 }
 
-function requestOf(item: PluginItem) {
-  if (item) {
-    if (typeof item === "string") return item;
-    if (Array.isArray(item)) return item[0];
-    if ((item as ConfigItem).file) return (item as ConfigItem).file.request;
-  }
+/** Create plugin configuration item for `babel-plugin-const-enum`. */
+function constEnumPlugin(preserveConstEnums: boolean): PluginItem {
+  const transform = preserveConstEnums ? "removeConst" : "constObject";
+  return ["babel-plugin-const-enum", {transform}];
+}
+
+interface LoadedOptions extends TransformOptions {
+  plugins: Plugin[];
+}
+
+interface Plugin<T = any> extends PluginObj<T> {
+  name: never;
+  key: string;
+  options: object;
 }
