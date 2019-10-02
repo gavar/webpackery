@@ -1,3 +1,10 @@
+## [0.0.11](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.10...v/babel-configurer/0.0.11) (2019-10-02)
+
+
+### Bug Fixes
+
+* detecting typescript / react ([5252f0d](https://github.com/gavar/webpackery/commit/5252f0d))
+
 ## [0.0.10](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.9...v/babel-configurer/0.0.10) (2019-10-02)
 
 
