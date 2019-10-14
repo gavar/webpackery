@@ -1,3 +1,10 @@
+## [0.0.12](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.11...v/babel-configurer/0.0.12) (2019-10-14)
+
+
+### Bug Fixes
+
+* null ref in InjectEmptyExports ([3918761](https://github.com/gavar/webpackery/commit/3918761))
+
 ## [0.0.11](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.10...v/babel-configurer/0.0.11) (2019-10-02)
 
 
