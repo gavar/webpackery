@@ -41,9 +41,10 @@ export function InjectEmptyExports(babel: Babel): PluginObj<State> {
 
 function isTypeDeclaration(node: ExportDeclaration) {
   if (node.type === "ExportNamedDeclaration")
-    switch (node.declaration.type) {
-      case "TSTypeAliasDeclaration":
-      case "TSInterfaceDeclaration":
-        return true;
-    }
+    if (node.declaration)
+      switch (node.declaration.type) {
+        case "TSTypeAliasDeclaration":
+        case "TSInterfaceDeclaration":
+          return true;
+      }
 }
