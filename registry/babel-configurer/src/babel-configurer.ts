@@ -10,9 +10,9 @@ import {
 import { setDefaultBy, WebpackConfigurer, WebpackContext } from "@webpackery/core";
 import { omit } from "lodash";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
+import { CompilerOptions } from "typescript";
 import { RuleSetCondition, RuleSetRule } from "webpack";
 import { InjectEmptyExports } from "./inject-empty-exports";
-import { CompilerOptions } from "typescript";
 import { createTypeScriptHost, findTsConfigFile, parseJsonConfigFileContent, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {

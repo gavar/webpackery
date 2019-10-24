@@ -20,9 +20,9 @@ export function setDefaultTo<T, K extends keyof T>(object: T, key: K, value: T[K
  * @param calculate - function to invoke for calculating default value.
  * @param args - arguments to pass into a function.
  */
-export function setDefaultBy<T, K extends keyof T, P extends any[]>(object: T, key: K,
-                                                                    calculate: (...args: P) => T[K],
-                                                                    ...args: P): void {
+export function setDefaultBy<T, K extends keyof T, P extends any[]>(
+  object: T, key: K,
+  calculate: (...args: P) => T[K], ...args: P): void {
   if (object[key] == null)
     set(object, key, calculate(...args));
 }

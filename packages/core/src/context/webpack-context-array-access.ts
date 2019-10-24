@@ -13,7 +13,10 @@ export interface CreateArrayAccess<T> {
   setter(context: WebpackContext, value: T[]): void,
 }
 
-export function createArrayAccess<T>(context: WebpackContext, props: CreateArrayAccess<T>): WebpackContextArrayAccess<T> {
+export function createArrayAccess<T>(
+  context: WebpackContext,
+  props: CreateArrayAccess<T>,
+): WebpackContextArrayAccess<T> {
   const {getter, setter} = props;
   function get() { return getter(context); }
   function set(values: T[]) { setter(context, values); }

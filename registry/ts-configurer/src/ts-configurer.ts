@@ -1,5 +1,5 @@
-import { Options } from "ts-loader";
 import { WebpackConfigurer, WebpackContext } from "@webpackery/core";
+import { Options } from "ts-loader";
 import { RuleSetLoader, RuleSetRule } from "webpack";
 
 export namespace TsConfigurer {
