@@ -1,3 +1,10 @@
+## [0.0.13](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.12...v/babel-configurer/0.0.13) (2019-10-24)
+
+
+### Features
+
+* improving typescript support ([86ca067](https://github.com/gavar/webpackery/commit/86ca067))
+
 ## [0.0.12](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.11...v/babel-configurer/0.0.12) (2019-10-14)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@webpackery/babel-configurer",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Babel configuration for webpack",
   "keywords": [
     "babel",
