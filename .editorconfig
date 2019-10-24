@@ -1,0 +1,20 @@
+# top-most EditorConfig file
+root = true
+
+# common
+[*]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+
+# html
+[*.html]
+indent_size = 2
+
+# style
+[*.{css, scss}]
+indent_size = 2
+
+# code
+[*.{ts, tsx, js, jsx}]
+indent_size = 2
