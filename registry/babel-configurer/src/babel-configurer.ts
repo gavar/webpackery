@@ -12,7 +12,8 @@ import { omit } from "lodash";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 import { RuleSetCondition, RuleSetRule } from "webpack";
 import { InjectEmptyExports } from "./inject-empty-exports";
-import { findTsConfigFile, readTsConfigFile } from "./ts-utils";
+import { CompilerOptions } from "typescript";
+import { createTypeScriptHost, findTsConfigFile, parseJsonConfigFileContent, readTsConfigFile } from "./ts-utils";
 
 export namespace BabelConfigurer {
   export interface Props extends RuleSetRule {
@@ -100,27 +101,38 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
 
     // configure TypeScript
     if (props.useTypesScript) {
+      const options: CompilerOptions = {
+        preserveConstEnums: false,
+        experimentalDecorators: false,
+      };
+
       const ts = require("typescript");
       const tsconfigPath = props.tsconfigPath || findTsConfigFile(ts, context.config.context);
       if (tsconfigPath) {
-        const tsconfig = readTsConfigFile(ts, tsconfigPath);
-        const {compilerOptions} = tsconfig;
-        const {paths, preserveConstEnums} = compilerOptions;
+        const host = createTypeScriptHost(ts);
+        const json = readTsConfigFile(host, tsconfigPath);
+        const tsconfig = parseJsonConfigFileContent(host, json);
+        Object.assign(options, tsconfig.options);
 
         // use tsconfig paths for resolution
-        if (paths)
+        if (options.paths)
           context.resolve.plugin(new TsconfigPathsPlugin({
             extensions: props.extensions,
             configFile: tsconfigPath,
           }));
-
-        // add common typescript plugins
-        custom.plugins.push(
-          constEnumPlugin(preserveConstEnums),
-          InjectEmptyExports,
-        );
       }
+
+      // add plugins based on compiler options
+      custom.plugins.push(
+        options.experimentalDecorators && ["@babel/plugin-proposal-decorators", {legacy: true}],
+        ["@babel/plugin-proposal-class-properties", {loose: true}],
+        constEnumPlugin(options.preserveConstEnums),
+        InjectEmptyExports,
+      );
     }
+
+    // filler out disabled plugins
+    custom.plugins = custom.plugins.filter(Boolean);
 
     const rule: RuleSetRule = {
       loader: require.resolve("./babel-custom-loader"),
