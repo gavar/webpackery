@@ -124,6 +124,7 @@ export class BabelConfigurer extends WebpackConfigurer<BabelConfigurer.Props> {
 
       // add plugins based on compiler options
       custom.plugins.push(
+        ["@babel/plugin-transform-runtime", {helpers: false, regenerator: true}], // async syntax
         options.experimentalDecorators && ["@babel/plugin-proposal-decorators", {legacy: true}],
         ["@babel/plugin-proposal-class-properties", {loose: true}],
         constEnumPlugin(options.preserveConstEnums),
