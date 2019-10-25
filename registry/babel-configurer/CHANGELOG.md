@@ -1,3 +1,10 @@
+## [0.0.14](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.13...v/babel-configurer/0.0.14) (2019-10-25)
+
+
+### Features
+
+* @babel/plugin-transform-runtime ([b127088](https://github.com/gavar/webpackery/commit/b127088))
+
 ## [0.0.13](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.12...v/babel-configurer/0.0.13) (2019-10-24)
 
 
