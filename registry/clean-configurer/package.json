@@ -1,6 +1,6 @@
 {
   "name": "@webpackery/clean-configurer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "clean-webpack-plugin configuration for webpack",
   "keywords": [
     "clean",

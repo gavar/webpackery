@@ -1,3 +1,10 @@
+## [0.0.15](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.14...v/babel-configurer/0.0.15) (2019-10-25)
+
+
+### Bug Fixes
+
+* update depenedencies ([955344c](https://github.com/gavar/webpackery/commit/955344c))
+
 ## [0.0.14](https://github.com/gavar/webpackery/compare/v/babel-configurer/0.0.13...v/babel-configurer/0.0.14) (2019-10-25)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@webpackery/common-preset",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "preset for configuring common webpack tools",
   "keywords": [
     "analyzer",
@@ -44,7 +44,7 @@
     "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
   },
   "dependencies": {
-    "@webpackery/clean-configurer": ">=0.0.1 <1.0.0",
+    "@webpackery/clean-configurer": ">=0.0.2 <1.0.0",
     "@webpackery/core": ">=0.0.5 <1.0.0",
     "clean-webpack-plugin": "^3.0.0",
     "webpack-bundle-analyzer": "^3.4.1"
