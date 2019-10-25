@@ -1,11 +1,11 @@
 import { TransformOptions } from "@babel/core";
 import { TypeDef } from "@emulsy/lang";
-import { blue, cyan } from "ansi-colors";
+import { blue, cyan, red, yellow } from "ansi-colors";
 import { cloneDeep, defaultsDeep } from "lodash";
 import path from "path";
 import { Newable } from "tstt";
 import { Compiler, Configuration, Entry, Output, Plugin } from "webpack";
-import { isDevServer } from "../util";
+import { isDevServer, setDefaultBy } from "../util";
 import { argvToConfig, WebpackArgv } from "../webpack-argv";
 import { WebpackBoot } from "../webpack-boot";
 import { WebpackEnv } from "../webpack-env";
@@ -146,9 +146,18 @@ export class WebpackContext {
    */
   async configure(props: WebpackContext.Props): Promise<Configuration> {
     try {
-      this.logger.info("configuring webpack");
       this.initialize(props);
-      if (this.boot) await this.boot(this);
+
+      // print summary
+      const {production} = this;
+      const color = production ? red : yellow;
+      this.logger.info(color(`**** ${production ? "PRODUCTION " : "DEVELOPMENT"} MODE ****`));
+      this.logger.info("NODE_ENV:", process.env.NODE_ENV);
+      this.logger.info(color("*".repeat(26)));
+
+      // run custom boot script
+      if (this.boot)
+        await this.boot(this);
 
       // tslint:disable-next-line:prefer-for-of
       for (let i = 0; i < this.configurers.length; i++) {
@@ -183,6 +192,9 @@ export class WebpackContext {
     this.config = cloneDeep(props.config);
     this.config = argvToConfig(this.argv, this.config);
     this.config = defaultConfig(this.config);
+
+    // update env
+    setDefaultBy(process.env, "NODE_ENV", resolveNodeEnv, this);
   }
 
   private finalize(): void {
@@ -232,6 +244,7 @@ function defaultConfig(config: Configuration = {}): Configuration {
   const cwd = process.cwd();
   const {NODE_ENV} = process.env;
   const production = [NODE_ENV, config.mode].some(isProduction);
+
   const defaults: Configuration = {
     mode: production ? "production" : "development",
     devtool: production ? false : "cheap-module-eval-source-map",
@@ -267,4 +280,9 @@ function resolvePluginName(plugin: Plugin | PluginFunction): string {
     if (typeof plugin === "function") return plugin.name;
     if (typeof plugin === "object") return plugin.constructor.name;
   }
+}
+
+function resolveNodeEnv(context: WebpackContext): string {
+  if (context.production)
+    return "production";
 }
