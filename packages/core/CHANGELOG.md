@@ -1,3 +1,10 @@
+## [0.0.5](https://github.com/gavar/webpackery/compare/v/core/0.0.4...v/core/0.0.5) (2019-10-25)
+
+
+### Bug Fixes
+
+* print configuration summary and resolve default env value ([6243ade](https://github.com/gavar/webpackery/commit/6243ade))
+
 ## [0.0.4](https://github.com/gavar/webpackery/compare/v/core/0.0.3...v/core/0.0.4) (2019-10-01)
 
 
