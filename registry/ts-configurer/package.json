@@ -40,7 +40,7 @@
     "test": "jest --config ../../package.json --rootDir . --passWithNoTests"
   },
   "dependencies": {
-    "@webpackery/core": ">=0.0.1 <1.0.0",
+    "@webpackery/core": ">=0.0.5 <1.0.0",
     "ts-loader": "^6.0.4"
   },
   "devDependencies": {},

@@ -1004,11 +1004,6 @@
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.0.tgz#2b35eccfcee7d38cd72ad99232fbd58bffb3c84d"
   integrity sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==
 
-"@types/semantic-release@^15.13.0":
-  version "15.13.0"
-  resolved "https://registry.yarnpkg.com/@types/semantic-release/-/semantic-release-15.13.0.tgz#15793e0b3e84f7b05e616ff1240861dce1558c20"
-  integrity sha512-5X6Qoj3cSQ+gjqScNGJ70pPOiOs9RNpfivq6XoDj8tT6P9AmMmYNWOmmdDQSvFzOdz/bfpr0hq6Cw2uDZ4iIzw==
-
 "@types/semver@^6.0.1":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-6.0.2.tgz#5e8b09f0e4af53034b1d0fb9977a277847836205"

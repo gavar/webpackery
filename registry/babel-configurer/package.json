@@ -45,7 +45,7 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.6.0",
     "@babel/plugin-transform-runtime": "^7.6.2",
-    "@webpackery/core": ">=0.0.4 <1.0.0",
+    "@webpackery/core": ">=0.0.5 <1.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-const-enum": "^0.0.3",
     "lodash": "^4.17.15",
