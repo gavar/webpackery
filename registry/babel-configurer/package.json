@@ -48,7 +48,7 @@
     "@webpackery/core": ">=0.0.5 <1.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-const-enum": "^0.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "tsconfig-paths-webpack-plugin": "^3.2.0"
   },
   "devDependencies": {
